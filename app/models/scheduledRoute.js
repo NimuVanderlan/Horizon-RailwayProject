@@ -23,7 +23,7 @@ const scheduledRouteSchema = new mongoose.Schema({
 		}
 
 	},
-	status: {type: String,enum:['onTime','delayed','cancelled'],required: true, default: 'onTime'},
+	Sch_status: {type: String,enum:['onTime','delayed','cancelled'],required: true, default: 'onTime'},
 },{timestamps: true});
 
 const ScheduledRoute = mongoose.model('ScheduledRoute',scheduledRouteSchema);

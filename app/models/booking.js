@@ -7,7 +7,7 @@ const bookingSchema = new mongoose.Schema({
 	customer: {type: mongoose.Schema.Types.ObjectId, ref: 'User',required:true},
 	scheduledRoute :[{type: mongoose.Schema.Types.ObjectId, ref: 'ScheduledRoute',required: true}],
 	bookingDate: {type:Date,required: true, default:Date.now},
-	status: {type:String,enum:['confirmed','cancelled'],default: 'confirmed'},
+	bstatus: {type:String,enum:['confirmed','cancelled'],default: 'confirmed'},
 	price: {type:Number,required: true},
 },{timestamps: true});
 	ticket: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ticket',required: true}]
