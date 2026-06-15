@@ -1,0 +1,161 @@
+* {box-sizing: border-box; margin: 0; padding: 0;} /* global_reset*/
+
+body{ /*body styles the whole page*/
+  font-family: system-ui, sans-serif; /*use default UI font*/
+  background: #121212;
+  color: #F5F5F5; /*text color*/
+  font-size: 15px;
+}
+
+nav{ /*navigation bar*/
+  background: #1E1E1E;
+  padding: 1rem 2rem;
+  display: flex; /*turns into a flex box conainer */
+  justify-content: space-between; /*first item left and last item right*/
+  align-items: center;
+  border-bottom: 1px solid #1e2f45;
+}
+.logo /*targets element of class = logo*/{
+    color: #F5F5F5;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+}
+nav a /*targets all links inside nav*/{
+    color: #F5F5F5;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 0.9rem;
+}
+nav a:hover{ /*when mouse goes over change color*/
+    color: #f0f4f8;
+}
+.page{
+    display: none;
+    padding: 2rem;
+    max-width: 600px; /*prevents content becoming too big*/
+    margin: 0 auto;
+}
+.page.active {display: block;} /*only pages with class = "page active" are visible*/
+
+h2 { /*heading*/
+    color: #F5F5F5;
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+}
+
+.boxClass { /*used for boxes*/
+  background: #1E1E1E;
+  border: 1px solid #1e2f45;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+label{
+    display: block; /*place each lable on it's own line*/
+    font-size: 0.8rem;
+    color: #7a90a8;
+    margin-bottom: 0.3rem;
+    margin-top: 0.9rem;
+}
+
+label:first-child {margin-top: 0;} /*if it's the top label remove the top margin*/
+
+input, select { /*style the dropdown*/
+  width: 100%;
+  background: #3A3A3A;
+  border: 1px solid #1e2f45;
+  border-radius: 6px;
+  color: #f0f4f8;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.95rem;
+  outline: none;
+}
+input:focus, select:focus{ /*when clicked the border becomes orange*/
+    border-color: #f5a623;
+}
+
+button{
+  margin-top: 1rem;
+  background: #7FD1B9;
+  color: #0d1b2a;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:hover{
+    opacity: 0.85; /*becomes a bit transparent when mouse is passing over*/
+}
+
+button.transparent{ /*for class = "ghost"*/
+  background: transparent;
+  border: 1px solid #1e2f45;
+  color: #7a90a8;
+}
+button.danger{ /*Delete, Cancel Booking, Remove User buttons */
+    background: #e05c5c;
+    color: #fff;
+    
+}
+
+.error {color: #f08080;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+}
+.smallerText {color: #7a90a8; /*helper text*/
+    font-size: 0.85rem;
+    margin-top: 0.8rem;
+}
+.smallerText a {color: #98FF98;}
+
+.badge{ /*shape of the labels like Confirm and Cancel*/
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge.confirmed { /*green badge*/
+    background: #0f2a1f;
+    color: #4caf87;
+    border: 1px solid #4caf87;}
+.badge.cancelled { /*red badge*/
+    background: #2d1515;
+    color: #e05c5c;
+    border: 1px solid #e05c5c;}
+
+.row { /*for items in one line*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.price{ /*highlights price in orange*/
+    color: #f5a623;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.small{ /* for not importat info*/
+    font-size: 0.82rem;
+    color: #7a90a8;
+    margin-top: 0.2rem;
+}
+
+#toast{ /*tagets id = "toast"*/
+  position: fixed; bottom: 1.5rem; right: 1.5rem; /*stays in the same position when scrolling*/
+  background: #162032;
+  border: 1px solid #1e2f45;
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.88rem;
+  opacity: 0;
+  pointer-events: none; /*cannot be clicked when hidden*/
+  transition: opacity 0.3s; /*smooth fade effect*/
+}
+#toast.show {
+    opacity: 1;
+}

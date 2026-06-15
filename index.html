@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Horizon Railway</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav>
+  <span class="logo">HORIZON RAIL</span>
+  <div style="display:none">
+    <a href="#" onclick="showPage('search')">Search</a>
+    <a href="#" onclick="showPage('bookings')">My Bookings</a>
+    <a href="#" onclick="logout()" style="color:#e05c5c">Logout</a>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<div class="page active">
+
+  <div id="login">
+    <h2>Sign in</h2>
+    <div class="boxClass">
+      <label>Email</label>
+      <input type="email" id="email-for-login" placeholder="your@email.com"/>
+      <label>Password</label>
+      <input type="password" id="password-for-login" placeholder="your password"/>
+      <div class="error" id="login-error"></div>
+      <button onclick="handleLogin()">Sign in</button>
+    </div>
+    <p class="smallerText">No account? <a href="#" onclick="toggleAuth()">Register</a></p> <!-- this is less important text-->
+  </div>
+
+  <div id="form-for-singUp" style="display:none">
+    <h2>Create account</h2>
+    <div class="boxClass">
+      <label>First name</label>
+      <input type="text" id="name" placeholder="Mario"/>
+      <label>Last name</label>
+      <input type="text" id="surname" placeholder="Rossi"/>
+      <label>Email</label>
+      <input type="email" id="email-for-signUp" placeholder="your@email.com"/>
+      <label>Phone</label>
+      <input type="tel" id="phoneNumber" placeholder="your phone number"/>
+      <label>Date of birth</label>
+      <input type="date" id="dateOfBirth"/>
+      <label>Password</label>
+      <input type="password" id="password-for-signUp" placeholder="choose a password"/>
+      <div class="error" id="signUp-error"></div>
+      <button onclick="handleRegister()">Create account</button>
+    </div>
+    <p class="smallerText">Already have an account? <a href="#" onclick="toggleAuth()">Sign in</a></p>
+  </div>
+</div>
+
+<div class="page" id="searchingPage">
+  <h2>Search trips</h2>
+  <div class="boxClass">
+    <label>From</label>
+    <input type="text" id="departureStation" placeholder="Departure Station"/>
+    <label>To</label>
+    <input type="text" id="arrivalStation" placeholder="Arrival Station"/>
+    <label>Departure after</label>
+    <input type="datetime-local" id="departureAfter"/>
+    <label>Max results</label>
+    <select id="limit">
+      <option value="3">3</option>
+      <option value="5" selected>5</option>
+      <option value="10">10</option>
+      <option value="20">10</option>
+    </select>
+    <button onclick="handleSearch()">Search</button>
+  </div>
+  <div id="searchResults"></div>
+</div>
+
+
+<div class="page" id="BookingPage">
+  <h2>My Bookings</h2>
+  <div id="bookingsList"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
