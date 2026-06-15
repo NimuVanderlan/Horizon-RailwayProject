@@ -7,7 +7,7 @@ const trainSchema= new mongoose.Schema({
 	model: {type: String, required: true},
 	capacity: {type: Number,required: true},
 	availableSeats: {type: Number, required: true},
-	status: {type: String, enum:['operational','maintenance'], required: true},
+	Tstatus: {type: String, enum:['operational','maintenance'], required: true},
 });
 
 const Train =mongoose.model('Train', trainSchema);

@@ -1,10 +1,10 @@
 //the ticket model
-const mongoose=required('mongoose');
+const mongoose=require('mongoose');
 const ticketSchema=new mongoose.Schema({
 	ticketId:{type:Number,required:true,unique:true},
-	booking:{type:mongoose.Schema.Types.ObjectId, ref: 'Booking',required: true},
+	booking:{type:mongoose.Schema.Types.ObjectId, ref: 'Booking'},
 	scheduledRoute:{type: mongoose.Schema.Types.ObjectId, ref:'ScheduledRoute',required: true},
-	class:{type:String, enum:['businessClass','economyClass'],required: true},
+	classType:{type:String, enum:['businessclass','economyclass'],required: true},
 	price:{type:Number, required:true},
 	seatNum:{type: String},
 	qr:{type: String,unique:true},

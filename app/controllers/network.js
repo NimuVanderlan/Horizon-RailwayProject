@@ -121,11 +121,11 @@ try{
 		Sch_status:req.body.Sch_status,
 	});
 	const savedSR =await newSR.save();
-	return res.status(201).json({error: err.message});
+	return res.status(201).json({savedSR});
 
 }catch (err){
 	return res.status(500).json({error: err.message});
 }
 };
 
-module.exports{addStation,addRoute,addScheduledRoute};
+module.exports={addStation,addRoute,addScheduledRoute};
