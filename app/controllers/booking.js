@@ -10,7 +10,7 @@ const User = require('../models/user');
 const createBooking =async(req,res) => {
 	try{
 		//checking all the required fields
-		if(!req.body.customerId || !req.body.scheduledRouteId || !req.body.ticket || req.body.ticket.length===0){
+		if(!req.body.customerId || !req.body.ticket || req.body.ticket.length===0){
 			return res.status(400).json({ error: 'missing required fields'});
 		}
 
@@ -19,9 +19,19 @@ const createBooking =async(req,res) => {
 		if(!customer){
 			return res.status(404).json({ error: 'customer not found'});
 		}
+
+		let total=0;
+		const ticketList=[];
+		const routeIdlist=[];
 		
+	     for(const ticketInfo of req.body.ticket){
+
+		if(!ticketInfo.scheduledRouteId || !ticketInfo.classType){
+			return res.status(400).json({ error: 'missing ticket informations'});
+		     }
+
 		//find the scheduledRoute
-		const scheduledRoute = await ScheduledRoute.findById(req.body.scheduledRouteId);
+		const scheduledRoute = await ScheduledRoute.findById(ticketInfo.scheduledRouteId);
 		if(!scheduledRoute){
 			return res.status(404).json({ error: 'Scheduled route not found'});
 		}
@@ -33,37 +43,19 @@ const createBooking =async(req,res) => {
 		const oneHour = 60*60*1000;
 
 		if(timediff<oneHour){
-			return res.status(400).json({
-				error: 'Booking has to be made atleast 1 hour before the departure'
-			});
+			return res.status(400).json({error: 'Booking has to be made atleast 1 hour before the departure'});
 		}
 
+		if(!scheduledRoute.seats[ticketInfo.classType]){
+			return res.status(400).json({error: ticketInfo.classType +'is not available'});
+		}     
+
+		 if(scheduledRoute.seats[ticketInfo.classType].available <= 0){
+			return res.status(400).json({ error: 'No available seats in' + ticketInfo.classType});
+		 }
+
 		//calculate the total
-		let total=0;
-		const ticketList=[];
-
-		for(const ticketInfo of req.body.ticket){
-			//check if the class type is valid
-			if(!ticketInfo.classType){
-				return res.status(400).json({error: 'Class '});
-			}
-			// check chosen class is available on this route
-			if (ticketInfo.classType === 'businessclass' && !scheduledRoute.seats.businessclass) {
-				return res.status(400).json({ error: 'Business class not available' });
-			}
-			if (ticketInfo.classType === 'economyclass' && !scheduledRoute.seats.economyclass) {
-				return res.status(400).json({ error: 'Economy class not available' });
-			}
-
-			//check if seats are available
-			const seats= scheduledRoute.seats[ticketInfo.classType];
-			if(seats.available <= 0){
-				return res.status(400).json({
-					error: 'No available seats in ${ticketInfo.classType}'
-				});
-			}
-
-			//get price for each chosen class
+		 //get price for each chosen class
 			const pricePaid= scheduledRoute.price [ticketInfo.classType];
 			total += pricePaid;
 
@@ -83,16 +75,18 @@ const createBooking =async(req,res) => {
 
 			const savedT = await newTicket.save();
 			ticketList.push(savedT._id);
-		}
+			routeIdlist.push(scheduledRoute._id);
+		
 
 		//save updated the seat avilability
 		await scheduledRoute.save();
 
-		//create the booking
+	     }	
+		     //create the booking
 		const newBooking= new Booking({
 			bookingId: Date.now(),
 			customer:customer._id,
-			scheduledRoute: [scheduledRoute._id],
+			scheduledRoute: routeIdlist,
 			ticket: ticketList,
 			price:total,
 			bstatus: 'confirmed',
@@ -175,8 +169,17 @@ const viewBooking = async(req,res) => {
 			return res.status(404).json({error: 'Customer not found'});
 		}
 		//find all the bookings for a particular customer
-		const bookings=await Booking.find({ customer: req.params.customerId}).populate('ticket')
-		.populate('scheduledRoute');
+		const bookings=await Booking.find({ customer: req.params.customerId})
+			.populate({
+				path : 'ticket',
+				populate: {
+					path: 'scheduledRoute',
+					populate: {
+						path: 'route',
+						populate: {path: 'departureStation arrivalStation'}
+					}
+				}
+			});
 		return res.status(200).json(bookings);
 	}catch(err){
 		return res.status(500).json({error: err.message});

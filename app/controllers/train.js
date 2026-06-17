@@ -10,7 +10,7 @@ const ScheduledRoute = require('../models/scheduledRoute');
 const addTrain = async(req,res)=>{
 	try{
 		//checking the required fields
-		if(!req.body.trainId || !req.body.model || !req.body.capacity || !req.body.availableSeats || !req.body.Tstatus){
+		if(!req.body.trainId || !req.body.model || !req.body.capacity || !req.body.Tstatus){
 			return res.status(400).json({error: 'Missing required fields'});
 		}
 
@@ -25,7 +25,7 @@ const addTrain = async(req,res)=>{
 			trainId: req.body.trainId,
 			model: req.body.model,
 			capacity: req.body.capacity,
-			availableSeats: req.body.availableSeats,
+			//availableSeats: req.body.availableSeats,
 			Tstatus: req.body.Tstatus || 'operational',
 		});
 

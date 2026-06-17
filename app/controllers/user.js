@@ -64,7 +64,7 @@ try{
 		{expiresIn: '24h'}
 	);
 
-	return res.status(200).json({ token: token});
+	return res.status(200).json({ token: token, userId: user._id, role: user.role});
 }catch (err){
 	return res.status(500).json({error: err.message});
 }
@@ -123,5 +123,47 @@ const changepassword = async (req,res)=>{
 		return res.status(500).json({ error: err.message });
 	}
 };
+//use case of updating profiles
+const updateprofile = async(req, res) =>{
+	try{
+		//rejecting unauthorized update atempts
+		if(req.body.role){
+			return res.status(403).json({ error: 'Role can not be changed'});
+		}
+		if(req.body.password){
+			return res.status(403).json({error: 'Use the change password section'});
+		}if(req.body.email){
+			return res.status(403).json({error: 'Email cannot be changed'});
+		}
+		//find the particular user
+		const user = await User.findById(req.params.userId);
+		if(!user){
+			return res.status(404).json({ error: 'User not found'});
+		}
+		if (req.body.name) user.name = req.body.name;
+		if (req.body.surname) user.surname = req.body.surname;
+		if (req.body.phoneNumber) user.phoneNumber = req.body.phoneNumber;
+		if (req.body.address) user.address = req.body.address;
+		if (req.body.dateOfBirth) user.dateOfBirth = req.body.dateOfBirth;
+	
+		const updated = await user.save();
+		return res.status(200).json(updated);
+	}catch (err){
+		return res.status(500).json({ error: err.message});
+	}
+};
 
-module.exports = {registeruser, loginuser, getuser, deleteuser, changepassword };
+const logout = async(req,res) => {
+	try{
+		const user = await User.findById(req.params.userId);
+		if(!user){
+			return res.status(404).json({ error: 'User not found'});
+		}
+		user.loggedIn = false;
+		await user.save();
+		return res.status(200).json({message: 'Logged out successfully'});
+	}catch(err){
+		return res.status(500).json({error: err.message});
+	}
+};
+module.exports = {registeruser, loginuser, getuser, deleteuser, changepassword , updateprofile,logout };

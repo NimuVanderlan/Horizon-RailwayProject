@@ -4,6 +4,8 @@ const userfile=require ('../controllers/user');
 const trainfile=require('../controllers/train');
 const networkfile= require('../controllers/network');
 const bookingfile = require('../controllers/booking');
+const reportfile = require ('../controllers/report');
+const{checkadmin}= require('../controllers/auth');
 
 //the routes for each user controller function.
 router.post('/users/register',userfile.registeruser);
@@ -26,5 +28,12 @@ router.post('/bookings/create', bookingfile.createBooking);
 router.put('/bookings/cancel/:bookingId', bookingfile.cancelBooking);
 router.get('/bookings/:customerId', bookingfile.viewBooking);
 router.get('/bookings/ticket/:ticketId', bookingfile.getTicket);
+
+//report generator route
+router.get('/reports/mostBookedReport',checkadmin,reportfile.mostBookedReport);
+router.get('/reports/longestRreport',checkadmin,reportfile.longestRreport);
+
+//user profile update
+router.put('/userd/profile/:userId',userfile.updateprofile);
 
 module.exports = router;
