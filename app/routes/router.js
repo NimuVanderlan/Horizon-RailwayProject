@@ -13,6 +13,7 @@ router.post('/users/login',userfile.loginuser);
 router.get('/users/:email', userfile.getuser);
 router.delete('/users/:email',userfile.deleteuser);
 router.put('/users/change-password',userfile.changepassword);
+router.put('/users/profile/:userId',userfile.updateprofile);
 
 //train routes.....
 router.post('/trains/add',trainfile.addTrain);
@@ -33,7 +34,6 @@ router.get('/bookings/ticket/:ticketId', bookingfile.getTicket);
 router.get('/reports/mostBookedReport',checkadmin,reportfile.mostBookedReport);
 router.get('/reports/longestRreport',checkadmin,reportfile.longestRreport);
 
-//user profile update
-router.put('/userd/profile/:userId',userfile.updateprofile);
+
 
 module.exports = router;

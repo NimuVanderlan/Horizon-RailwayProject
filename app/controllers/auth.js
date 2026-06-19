@@ -12,7 +12,7 @@ const checkadmin = (req,res,next) => {
 		return res.status(401).json({ error: 'Invalid Token'});
 		}
 		//check if the user is admin or not
-		if(payload.role != 'admin'){
+		if(payload.role != 'Railway admin'){
 			return res.status(403).json({ error: 'You do not have access here'});
 		}
 		//attch the decoded info.....controller will see it

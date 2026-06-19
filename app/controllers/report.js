@@ -9,7 +9,7 @@ const mostBookedReport = async(req,res) => {
 		const tickets = await Ticket.find({valid: true});
 		for(const t of tickets){
 			const id =t.scheduledRoute.toString();
-			count_sR =(count_sR[id] || 0) +1;
+			count_sR[id] =(count_sR[id] || 0) +1;
 		}
 
 		//making the list(highest first)

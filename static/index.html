@@ -14,12 +14,14 @@
     <a href="#" onclick="showPage('search')">Search</a>
     <a href="#" onclick="mybookings();showPage('bookings')">My Bookings</a>
     <a href="#" onclick="logout()" style="color:#e05c5c">Logout</a>
+    <a href="#" id="reportsLink" onclick="reports(); showPage('reports')" style="display:none">Reports</a>
+    <a href="#" onclick="loadProfile(); showPage('profile')"> My Profile</a>
   </div>
 </nav>
 
 <div id="toast"></div>
 
-<div class="page active">
+<div class="page active" id="loginPage">
 
   <div id="login">
     <h2>Sign in</h2>
@@ -29,9 +31,10 @@
       <label>Password</label>
       <input type="password" id="password-for-login" placeholder="your password"/>
       <div class="error" id="login-error"></div>
-      <button onclick="login()">Sign in</button>
+      <button onclick="signin()">Sign in</button>
     </div>
-    <p class="smallerText">No account? <a href="#" onclick="toggleAuth()">Register</a></p> <!-- this is less important text-->
+    <p class="smallerText">No account? <a href="#" onclick="toggleAuth()">Register</a></p>
+    <p class= "smallerText">No acccount? <a href="#" onclick="showPage('search')">Login as guest</a></p>
   </div>
 
   <div id="form-for-signUp" style="display:none">
@@ -83,6 +86,30 @@
   <h2>My Bookings</h2>
   <div id="bookingsList"></div>
 </div>
+
+<div class= "page" id="reportsPage">
+	<h2>Reports</h2>
+	<div id="reportsContent"></div>
+</div>
+
+<div class= "page" id="profilePage">
+	<h2>MyProfile</h2>
+	<div class="boxClass">
+		<label>First name</label>
+		<input type="text" id="profile-name"/>
+		<label>Last name</label>
+		<input type="text" id="profile-surname"/>
+		<label>Phone</label>
+		<input type="tel" id="profile-phone"/>
+		<label>address</label>
+		<input type="text" id="profile-address"/>
+		<label>Date Of Birth</label>
+		<input type="date" id="p_dateOfBirth"/>
+		<div class="error" id="profile-error"></div>
+		<button onclick="saveProfile()">Save changes</button>
+	</div>
+</div>
+
 
 <script src="app.js"></script>
 </body>

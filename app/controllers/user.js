@@ -2,44 +2,41 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//checking required fields
+//UC - Register
 const registeruser=async(req,res)=> {
 try{	
 	if(!req.body.name || !req.body.email || !req.body.password || !req.body.role){
 	return res.status(400).json({ error: 'Missing required fields '});
 	}
 
+	//check if the email already exists
+	const existingUser = await User.findOne({ email: req.body.email });
+	if (existingUser){
+		return res.status(409).json({ error: 'email already exists!' });
+	}
+	//Hash the password to store
+	const hashedPass=await bcrypt.hash(req.body.password, 10);
 
-//check if the email already exists
-const existingUser = await User.findOne({ email: req.body.email });
-if (existingUser){
-	return res.status(409).json({ error: 'email already exists!' });
-}
-
-//Hash the password to store
-const hashedPass=await bcrypt.hash(req.body.password, 10);
-
-//Create the new user
-const newUser = new User({
-	name: req.body.name,
-	surname: req.body.surname,
-	dateOfBirth: req.body.dateOfBirth,
-	email: req.body.email,
-	phoneNumber: req.body.phoneNumber,
-	address: req.body.address,
-	password: hashedPass,
-	role: req.body.role,
-});
-
-//Save in the db
-const saveduser=await newUser.save();
-return res.status(201).json(saveduser);
+	//Create the new user
+	const newUser = new User({
+		name: req.body.name,
+		surname: req.body.surname,
+		dateOfBirth: req.body.dateOfBirth,
+		email: req.body.email,
+		phoneNumber: req.body.phoneNumber,
+		address: req.body.address,
+		password: hashedPass,
+		role: req.body.role,
+	});
+	//Save in the db
+	const saveduser=await newUser.save();
+	return res.status(201).json(saveduser);
 } catch(err){
 	return res.status(500).json({ error: err.message });
 }
 };
 
-//UC=user login
+//UC=Log in
 const loginuser= async(req,res)=>{
 try{
 	//required fields checking
@@ -57,20 +54,20 @@ try{
 		return res.status(401).json({ error:'Invalid password'});
 	}
 
-	//Generate JWT token
+	//The JWT token......
 	const token = jwt.sign(
 		{userId: user._id, role: user.role},
 		process.env.TOKEN_KEY,
 		{expiresIn: '24h'}
 	);
 
-	return res.status(200).json({ token: token, userId: user._id, role: user.role});
+	return res.status(200).json({ token: token, userId: user._id, role: user.role, user:user});//token and userId for the user login, role is for determining the what clearence do the user have and user is returned as on object to manage profile.......
 }catch (err){
 	return res.status(500).json({error: err.message});
 }
 };
 
-// UC= viewprofile
+// viewprofile
 const getuser=async(req,res)=>{
 try{
 	const user=await User.findOne({ email: req.params.email });
@@ -147,7 +144,7 @@ const updateprofile = async(req, res) =>{
 		if (req.body.dateOfBirth) user.dateOfBirth = req.body.dateOfBirth;
 	
 		const updated = await user.save();
-		return res.status(200).json(updated);
+		return res.status(200).json(updated);//json message of the updated profile
 	}catch (err){
 		return res.status(500).json({ error: err.message});
 	}

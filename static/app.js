@@ -1,10 +1,12 @@
-// where our backend live
+
 const url = 'http://localhost:3000/api';
 
 // we store the logged-in user's token and id here after login
 let token = null;
-let currentUserId = null;
+let currentUserId = null;//holds the user id of the current user
+let currentU = null; //currentU is the variable holding the current user object that will be used in manage profile.....
 let cart = []; //the variable to hold the users ticket before confirming the order
+let currentRole=null;
 
 // small helper: show a message in the toast box
 function toast(msg) {
@@ -20,6 +22,9 @@ function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     if (page === 'search') document.getElementById('searchingPage').classList.add('active');
     if (page === 'bookings') document.getElementById('BookingPage').classList.add('active');
+	if(page === 'reports') document.getElementById('reportsPage').classList.add('active');
+	if(page === 'profile') document.getElementById('profilePage').classList.add('active');
+	if(page === 'login') document.getElementById('loginPage').classList.add('active');
 }
 
 async function register(){
@@ -63,7 +68,7 @@ function toggleAuth() {
     }
 }
 
-async function login(){
+async function signin(){
 	const credential ={
 		email: document.getElementById('email-for-login').value,
 		password: document.getElementById('password-for-login').value
@@ -77,6 +82,11 @@ async function login(){
 	if(res.status ===200){
 		token=data.token;
 		currentUserId = data.userId;
+		currentRole = data.role;
+		currentU =data.user;
+		if(currentRole==='Railway admin'){
+			document.getElementById('reportsLink').style.display = 'inline';
+		}
 
 		document.querySelector('nav div').style.display = 'block';
 
@@ -133,6 +143,12 @@ async function search(){
 }
 
 function addOrder (scheduledRouteId,classType, price){
+	//we added this block so user is forced to sign in before anykind of purchases....
+	if(!currentUserId){
+		toast('Please sign in');
+		showPage('login');
+		return;
+	}
 	cart.push({scheduledRouteId: scheduledRouteId ,classType: classType, price: price});
 	rendercart();//comment here
 }
@@ -146,7 +162,7 @@ function rendercart(){
 		sentence += '<div>' + item.classType + ' - €' + item.price + '</div>';
 	});
 	sentence += '<div class="price">Total: €' + total + '</div>' +'<button onclick="confirmorder()">Confirm order</button>';
-	cartdiv.innerHTML = html;
+	cartdiv.innerHTML = sentence;
 }
 
 async function confirmorder(){
@@ -199,7 +215,78 @@ async function mybookings(){
 	})
 }
 
+async function reports(){
+	const res = await fetch(url + '/reports/mostBookedReport',{
+		headers: {token: token}
+	});
+	const data = await res.json();
+	const box = document.getElementById('reportsContent');
 
-i
+	if(res.status !== 200){
+	box.innerHTML = '<p>' + data.error + '</p>';
+		return;
+	}
+	//data has the info about scheduledRoute and bookings;we make 'stuff' to arrange the format to be shown........
+	let stuff = '<h3>Most booked routes</h3>';
+	data.forEach(r=>{
+		stuff += '<div class= "small">Route ' + r.scheduledRoute + ' - ' + r.bookings + 'bookings</div>';
+	});
 
+	//the second report(longest routes)
+	const res2= await fetch(url + '/reports/longestRreport',{
+		headers: {token: token}
+	});
+	const data2 = await res2.json();
+	if(res2.status==200){
+		stuff += '<h3>Longest routes</h3>';
+		data2.forEach(r =>{
+			stuff += '<div class="small">Route #' + r.routeId + ' - ' + r.distance + 'km</div>';
+		});
+	}
+	box.innerHTML = stuff;
+}
 
+async function loadProfile(){
+	document.getElementById('profile-name').value = currentU.name || "-";
+	document.getElementById('profile-surname').value = currentU.surname || "-";
+	document.getElementById('profile-phone').value = currentU.phoneNumber || "-";
+	document.getElementById('profile-address').value = currentU.address || "-";
+	document.getElementById('p_dateOfBirth').value= currentU.dateOfBirth || "-";
+}
+
+async function saveProfile(){
+	const update = {
+		name: document.getElementById('profile-name').value,
+		surname: document.getElementById('profile-surname').value,
+		phoneNumber: document.getElementById('profile-phone').value,
+		address: document.getElementById('profile-address').value,
+		dateOfBirth: document.getElementById('p_dateOfBirth').value
+	};
+	const res = await fetch(url + '/users/profile/' + currentUserId, {
+		method: 'PUT',
+		headers: {'Content-Type': 'application/json'},
+		body: JSON.stringify(update)
+
+	});
+	const data = await res.json();
+	if (res.status ===200){
+		currentU = data;
+		toast('Profile updated');
+	}else{
+		document.getElementById('profile-error').textContent = data.error;
+	}
+}
+function logout() {
+	// clear all stored login state
+	 token = null;
+	currentUserId = null;
+	currentRole = null;
+	currentU = null;
+	cart = [];
+	// hide the nav menu /home page ,and the reports link we added for specialy for admins
+	document.querySelector('nav div').style.display = 'none';
+	document.getElementById('reportsLink').style.display = 'none';
+	// return to the login page
+	showPage('login');
+	toast('Logged out sucessfully');
+}
