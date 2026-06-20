@@ -21,3 +21,8 @@
 - ticketInspector — scan/validate tickets
 - railwayAdmin — manage network, view reports
 
+## Authors
+Alberto Moretto, Shenith Nimuthu Vanderlan,
+Kavin Dahanayaka, Arafat Mawla
+
+
