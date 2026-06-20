@@ -1,90 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Horizon Railway</title>
-  <link rel="stylesheet" href="style.css"/>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Horizon Railway</title>
+	<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
 <nav>
-  <span class="logo">HORIZON RAIL</span>
-  <div style="display:none">
-    <a href="#" onclick="showPage('search')">Search</a>
-    <a href="#" onclick="mybookings();showPage('bookings')">My Bookings</a>
-    <a href="#" onclick="logout()" style="color:#e05c5c">Logout</a>
-    <a href="#" id="reportsLink" onclick="reports(); showPage('reports')" style="display:none">Reports</a>
-    <a href="#" onclick="loadProfile(); showPage('profile')"> My Profile</a>
-  </div>
+	<span class="logo">HORIZON RAILWAY</span>
+	<div style="display:none">
+		<a href="#" onclick="showPage('search')">Search</a>
+		<a href="#" onclick="mybookings();showPage('bookings')">My Bookings</a>
+		<a href="#" onclick="logout()" style="color:#e05c5c">Logout</a>
+		<a href="#" id="reportsLink" onclick="reports(); showPage('reports')" style="display:none">Reports</a>
+		<a href="#" onclick="loadProfile(); showPage('profile')"> My Profile</a>
+		<a href="#" id="adminLink" onclick="showPage('admin')" style="display:none">Manage Network</a>
+	</div>
 </nav>
 
 <div id="toast"></div>
 
 <div class="page active" id="loginPage">
+	<div id="login">
+		<h2>Sign in</h2>
+		<div class="boxClass">
+			<label>Email</label>
+			<input type="email" id="loginEmail" placeholder="your@email.com"/>
+			<label>Password</label>
+			<input type="password" id="loginPass" placeholder="your password"/>
+			<div class="error" id="loginErr"></div>
+			<button onclick="signin()">Sign in</button>
+		</div>
+		<p class="opt1">No account? <a href="#" onclick="toggleAuth()">Register</a></p>
+		<p class= "opt2">No acccount? <a href="#" onclick="showPage('search')">Login as guest</a></p>
+	</div>
 
-  <div id="login">
-    <h2>Sign in</h2>
-    <div class="boxClass">
-      <label>Email</label>
-      <input type="email" id="email-for-login" placeholder="your@email.com"/>
-      <label>Password</label>
-      <input type="password" id="password-for-login" placeholder="your password"/>
-      <div class="error" id="login-error"></div>
-      <button onclick="signin()">Sign in</button>
-    </div>
-    <p class="smallerText">No account? <a href="#" onclick="toggleAuth()">Register</a></p>
-    <p class= "smallerText">No acccount? <a href="#" onclick="showPage('search')">Login as guest</a></p>
-  </div>
-
-  <div id="form-for-signUp" style="display:none">
-    <h2>Create account</h2>
-    <div class="boxClass">
-      <label>First name</label>
-      <input type="text" id="name" placeholder="Mario"/>
-      <label>Last name</label>
-      <input type="text" id="surname" placeholder="Rossi"/>
-      <label>Email</label>
-      <input type="email" id="email-for-signUp" placeholder="your@email.com"/>
-      <label>Phone</label>
-      <input type="tel" id="phoneNumber" placeholder="your phone number"/>
-      <label>Date of birth</label>
-      <input type="date" id="dateOfBirth"/>
-      <label>Password</label>
-      <input type="password" id="password-for-signUp" placeholder="choose a password"/>
-      <div class="error" id="signUp-error"></div>
-      <button onclick="register()">Create account</button>
-    </div>
-    <p class="smallerText">Already have an account? <a href="#" onclick="toggleAuth()">Sign in</a></p>
+ <div id="signUpform" style="display:none">
+	  <h2>Create account</h2>
+	  <div class="boxClass">
+		  <label>First name</label>
+		  <input type="text" id="name" placeholder="Mario"/>
+		  <label>Last name</label>
+		  <input type="text" id="surname" placeholder="Rossi"/>
+		  <label>Email</label>
+		  <input type="email" id="signUpEmail" placeholder="your@email.com"/>
+		  <label>Phone</label>
+		  <input type="tel" id="phoneNum" placeholder="your phone number"/>
+		  <label>Date of birth</label>
+		  <input type="date" id="dateOfBirth"/>
+		  <label>Password</label>
+		  <input type="password" id="signUpPass" placeholder="choose a password"/>
+		  <div class="error" id="signUpErr"></div>
+		  <button onclick="register()">Create account</button>
+	  </div>
+	  <p class="opt1">Already have an account? <a href="#" onclick="toggleAuth()">Sign in</a></p>
   </div>
 </div>
 
+
 <div class="page" id="searchingPage">
-  <h2>Search trips</h2>
-  <div class="boxClass">
-    <label>From</label>
-    <input type="text" id="departureCity" placeholder="From"/>
-    <label>To</label>
-    <input type="text" id="arrivalCity" placeholder="To"/>
-    <label>Departure after</label>
-    <input type="datetime-local" id="date"/>
-    <label>Max results</label>
-    <select id="limit">
-      <option value="3">3</option>
-      <option value="5" selected>5</option>
-      <option value="10">10</option>
-      <option value="20">10</option>
-    </select>
-    <button onclick="search()">Search</button>
-  </div>
-  <div id="searchResults"></div>
-  <div id="cart"></div>
+	<h2>Search trips</h2>
+	<div class="boxClass">
+		<label>From</label>
+		<input type="text" id="departureCity" placeholder="From"/>
+		<label>To</label>
+		<input type="text" id="arrivalCity" placeholder="To"/>
+		<label>Departure after</label>
+		<input type="datetime-local" id="date"/>
+		<label>Max results</label>
+		<select id="limit">
+			<option value="3">3</option>
+			<option value="5" selected>5</option>
+			<option value="10">10</option>
+			<option value="20">10</option>
+		</select>
+		<button onclick="search()">Search</button>
+	</div>
+	<div id="results"></div>
+	<div id="cart"></div>
 </div>
 
 
 <div class="page" id="BookingPage">
-  <h2>My Bookings</h2>
-  <div id="bookingsList"></div>
+	<h2>My Bookings</h2>
+	<div id="bookingsList"></div>
 </div>
 
 <div class= "page" id="reportsPage">
@@ -96,20 +97,31 @@
 	<h2>MyProfile</h2>
 	<div class="boxClass">
 		<label>First name</label>
-		<input type="text" id="profile-name"/>
+		<input type="text" id="profilename"/>
 		<label>Last name</label>
-		<input type="text" id="profile-surname"/>
+		<input type="text" id="profilesurname"/>
 		<label>Phone</label>
-		<input type="tel" id="profile-phone"/>
+		<input type="tel" id="profilephone"/>
 		<label>address</label>
-		<input type="text" id="profile-address"/>
+		<input type="text" id="profileaddress"/>
 		<label>Date Of Birth</label>
 		<input type="date" id="p_dateOfBirth"/>
-		<div class="error" id="profile-error"></div>
+		<div class="error" id="profileErr"></div>
 		<button onclick="saveProfile()">Save changes</button>
 	</div>
 </div>
 
+<div class="page" id="adminPage">
+	<h2>Add Route</h2>
+	<div class="boxClass">
+		<input type="number" id="routeid" placeholder="Route ID"/>
+		<input type="text" id="routedep" placeholder="Departure Station"/>
+		<input type="text" id="routearr" placeholder="Arrival Station"/>
+		<input type="number" id="routedistance" placeholder="Distance"/>
+		<button onclick="addRoute()">Add Route</button>
+		<div class="error" id="adminErr"></div>
+	</div>
+</div>
 
 <script src="app.js"></script>
 </body>

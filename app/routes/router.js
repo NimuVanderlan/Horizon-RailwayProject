@@ -1,3 +1,4 @@
+//import the controller files
 const express = require('express');
 const router = express.Router();
 const userfile=require ('../controllers/user');
@@ -6,6 +7,7 @@ const networkfile= require('../controllers/network');
 const bookingfile = require('../controllers/booking');
 const reportfile = require ('../controllers/report');
 const{checkadmin}= require('../controllers/auth');
+const inspectorfile = require('../controllers/inspector');
 
 //the routes for each user controller function.
 router.post('/users/register',userfile.registeruser);
@@ -34,6 +36,7 @@ router.get('/bookings/ticket/:ticketId', bookingfile.getTicket);
 router.get('/reports/mostBookedReport',checkadmin,reportfile.mostBookedReport);
 router.get('/reports/longestRreport',checkadmin,reportfile.longestRreport);
 
-
+//autherization route
+router.post('/inspector/scan', inspectorfile.scanticket);
 
 module.exports = router;

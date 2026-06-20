@@ -1,3 +1,5 @@
+
+//This is the root file,this will start the server and connect the database.
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -9,16 +11,16 @@ app.use(express.json());
 
 app.use(express.static('static'));//serve static files
 
-//routes importing 
+//importing router files to route the functions correctly for endpoints
 const userRoutes = require('./app/routes/router');
 app.use('/api', userRoutes);
 
-// Connect to MongoDB
+// Database connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.log('Connection error:', err));
 
-// Start the server
+// server start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

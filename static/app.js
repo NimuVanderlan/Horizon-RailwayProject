@@ -25,19 +25,20 @@ function showPage(page) {
 	if(page === 'reports') document.getElementById('reportsPage').classList.add('active');
 	if(page === 'profile') document.getElementById('profilePage').classList.add('active');
 	if(page === 'login') document.getElementById('loginPage').classList.add('active');
+	if (page === 'admin') document.getElementById('adminPage').classList.add('active');
 }
 
 async function register(){
 	const newUser = {
         name: document.getElementById('name').value,
         surname: document.getElementById('surname').value,
-        email: document.getElementById('email-for-signUp').value,
-        phoneNumber: document.getElementById('phoneNumber').value,
+        email: document.getElementById('signUpEmail').value,
+        phoneNumber: document.getElementById('phoneNum').value,
         dateOfBirth: document.getElementById('dateOfBirth').value,
-        password: document.getElementById('password-for-signUp').value,
-        role: 'customer'   // backend requires a role; signups are customers
+        password: document.getElementById('signUpPass').value,
+        role: 'customer'   // customer is the default role
     };
-	//the http request to the register endpoint......
+	//the http request to the register endpoint to the register the user
 	 const res = await fetch('http://localhost:3000/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -49,15 +50,15 @@ async function register(){
         toast('Account created, please sign in');
         toggleAuth();   // actually logged in version
     } else {
-        document.getElementById('signUp-error').textContent = data.error;
+        document.getElementById('signUpErr').textContent = data.error;
     }
 }
 
 function toggleAuth() {
     const loginBox = document.getElementById('login');
-    const signupBox = document.getElementById('form-for-signUp');
+    const signupBox = document.getElementById('signUpform');
 
-    // if signup is hidden, show it and hide login
+    // if signup is hidden, show it and hide login(This is the way of doing page shifting;one page is hided when the other has to pop up)
     if (signupBox.style.display === 'none') {
         signupBox.style.display = 'block';
         loginBox.style.display = 'none';
@@ -70,9 +71,10 @@ function toggleAuth() {
 
 async function signin(){
 	const credential ={
-		email: document.getElementById('email-for-login').value,
-		password: document.getElementById('password-for-login').value
+		email: document.getElementById('loginEmail').value,
+		password: document.getElementById('loginPass').value
 	};
+	//http request for the backend end point
 	const res = await fetch('http://localhost:3000/api/users/login',{method: 'POST',
 	headers: {'Content-Type':'application/json'},
 	body:JSON.stringify(credential)
@@ -86,14 +88,15 @@ async function signin(){
 		currentU =data.user;
 		if(currentRole==='Railway admin'){
 			document.getElementById('reportsLink').style.display = 'inline';
+			document.getElementById('adminLink').style.display = 'inline';
 		}
 
 		document.querySelector('nav div').style.display = 'block';
 
 		showPage('search');
-		toast('Welcome back');
+		toast('Welcome Back');
 	}else{
-		document.getElementById('login-error').textContent = data.error;
+		document.getElementById('loginErr').textContent = data.error;
 	}
 }
 
@@ -106,7 +109,7 @@ async function search(){
 	const res = await fetch(url + '/trains/search?' + params);
     const data = await res.json();
 
-	const container = document.getElementById('searchResults');
+	const container = document.getElementById('results');
     if (res.status !== 200) {
         container.innerHTML = '<p>' + data.error + '</p>';
         return;
@@ -150,7 +153,7 @@ function addOrder (scheduledRouteId,classType, price){
 		return;
 	}
 	cart.push({scheduledRouteId: scheduledRouteId ,classType: classType, price: price});
-	rendercart();//comment here
+	rendercart();//here it fetches the cart(multiple tickets on the cart)......
 }
 
 function rendercart(){
@@ -167,7 +170,7 @@ function rendercart(){
 
 async function confirmorder(){
 	if(cart.length ==0){
-		toast('Your order is empty');
+		toast('Your order is empty,add tickets to proceed');
 		return;
 	}
 	//here mapped because backend ticket object only need these two data types as mandataory fields.
@@ -247,19 +250,19 @@ async function reports(){
 }
 
 async function loadProfile(){
-	document.getElementById('profile-name').value = currentU.name || "-";
-	document.getElementById('profile-surname').value = currentU.surname || "-";
-	document.getElementById('profile-phone').value = currentU.phoneNumber || "-";
-	document.getElementById('profile-address').value = currentU.address || "-";
+	document.getElementById('profilename').value = currentU.name || "-";
+	document.getElementById('profilesurname').value = currentU.surname || "-";
+	document.getElementById('profilephone').value = currentU.phoneNumber || "-";
+	document.getElementById('profileaddress').value = currentU.address || "-";
 	document.getElementById('p_dateOfBirth').value= currentU.dateOfBirth || "-";
 }
 
 async function saveProfile(){
 	const update = {
-		name: document.getElementById('profile-name').value,
-		surname: document.getElementById('profile-surname').value,
-		phoneNumber: document.getElementById('profile-phone').value,
-		address: document.getElementById('profile-address').value,
+		name: document.getElementById('profilename').value,
+		surname: document.getElementById('profilesurname').value,
+		phoneNumber: document.getElementById('profilephone').value,
+		address: document.getElementById('profileaddress').value,
 		dateOfBirth: document.getElementById('p_dateOfBirth').value
 	};
 	const res = await fetch(url + '/users/profile/' + currentUserId, {
@@ -273,7 +276,7 @@ async function saveProfile(){
 		currentU = data;
 		toast('Profile updated');
 	}else{
-		document.getElementById('profile-error').textContent = data.error;
+		document.getElementById('profileErr').textContent = data.error;
 	}
 }
 function logout() {
@@ -286,7 +289,28 @@ function logout() {
 	// hide the nav menu /home page ,and the reports link we added for specialy for admins
 	document.querySelector('nav div').style.display = 'none';
 	document.getElementById('reportsLink').style.display = 'none';
+	document.getElementById('adminLink').style.display = 'none';
 	// return to the login page
 	showPage('login');
 	toast('Logged out sucessfully');
+}
+//We added this function, to implement the usecase "update timetables"-Basically this function helps admins to add a particular route to the system
+async function addRoute(){
+    const body = {
+	    routeId: Number(document.getElementById('routeid').value),
+	    departureStation: document.getElementById('routedep').value,
+	    arrivalStation: document.getElementById('routearr').value,
+	    distance: Number(document.getElementById('routedistance').value)
+    };
+	const res = await fetch(url + '/network/route/add', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(body)
+	});
+    const data = await res.json();
+    if(res.status === 201){
+        toast('Route added successfully');
+    } else {
+        document.getElementById('adminErr').textContent = data.error;
+    }
 }

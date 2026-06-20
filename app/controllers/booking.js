@@ -1,4 +1,4 @@
-//Controller for the booking class
+//Controller for the booking class(the main booking functions.....)
 
 const Booking = require('../models/booking');
 const Ticket =require('../models/ticket');
@@ -9,17 +9,15 @@ const User = require('../models/user');
 
 const createBooking =async(req,res) => {
 	try{
-		//checking all the required fields
+		//check all the required fields
 		if(!req.body.customerId || !req.body.ticket || req.body.ticket.length===0){
 			return res.status(400).json({ error: 'missing required fields'});
 		}
-
 		//find the entered customer
 		const customer = await User.findById(req.body.customerId);
 		if(!customer){
 			return res.status(404).json({ error: 'customer not found'});
 		}
-
 		let total=0;
 		const ticketList=[];
 		const routeIdlist=[];
@@ -63,24 +61,21 @@ const createBooking =async(req,res) => {
 			scheduledRoute.seats[ticketInfo.classType].available -= 1;
 
 			//create ticket
-			const newTicket= new Ticket({
-				ticketId: Date.now() + Math.random(),
-				scheduledRoute: scheduledRoute._id,
-				classType: ticketInfo.classType,
-				price: pricePaid,
-				seatNum: ticketInfo.seatNum || 'auto',
-				qr: 'QR-' + Date.now() + '-' + Math.random(),
-				valid: true,
+		     const newTicket= new Ticket({
+			     ticketId: Date.now() + Math.random(),
+			     scheduledRoute: scheduledRoute._id,
+			     classType: ticketInfo.classType,
+			     price: pricePaid,
+			     seatNum: ticketInfo.seatNum || 'auto',
+			     qr: 'QR-' + Date.now() + '-' + Math.random(),
+			     valid: true,
 			});
-
-			const savedT = await newTicket.save();
-			ticketList.push(savedT._id);
-			routeIdlist.push(scheduledRoute._id);
+		     const savedT = await newTicket.save();
+		     ticketList.push(savedT._id);
+		     routeIdlist.push(scheduledRoute._id);
 		
-
-		//save updated the seat avilability
-		await scheduledRoute.save();
-
+		     //save updated the seat avilability
+			await scheduledRoute.save();
 	     }	
 		     //create the booking
 		const newBooking= new Booking({
@@ -124,7 +119,7 @@ const cancelBooking = async(req, res)=>{
 		}
 		// check booking is not already cancelled
 		 if (booking.bstatus === 'cancelled') {
-			 return res.status(400).json({ error: 'Booking already cancelled' });
+			 return res.status(400).json({ error: 'Booking has been cancelled' });
 		 }
 		// find scheduled route to check departure time
 		 const scheduledRoute = await ScheduledRoute.findById(
@@ -168,7 +163,7 @@ const viewBooking = async(req,res) => {
 		if(!customer){
 			return res.status(404).json({error: 'Customer not found'});
 		}
-		//find all the bookings for a particular customer
+		//find all the bookings for a particular customer and populate with the information related
 		const bookings=await Booking.find({ customer: req.params.customerId})
 			.populate({
 				path : 'ticket',

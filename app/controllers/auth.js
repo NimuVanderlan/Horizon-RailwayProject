@@ -1,3 +1,4 @@
+//we use this file as the authentication caode where we have to male sure the railway admin is allowed the admin part  of the system
 const jwt = require('jsonwebtoken');
 
 const checkadmin = (req,res,next) => {
@@ -11,7 +12,7 @@ const checkadmin = (req,res,next) => {
 		if(err){
 		return res.status(401).json({ error: 'Invalid Token'});
 		}
-		//check if the user is admin or not
+		//check if the user is a railway admin or not
 		if(payload.role != 'Railway admin'){
 			return res.status(403).json({ error: 'You do not have access here'});
 		}
